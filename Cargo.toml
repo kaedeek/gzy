@@ -2,6 +2,16 @@
 name = "gzy"
 version = "1.0.0"
 edition = "2024"
+description = "Make Git commits faster and easier"
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/kaedeek/gzy"
+keywords = ["git", "cli", "tool", "helper"]
+categories = ["command-line-utilities"]
 
 [dependencies]
 clap = { version = "4.5", features = ["derive"] }
+
+[[bin]]
+name = "gzy"
+path = "src/main.rs"
