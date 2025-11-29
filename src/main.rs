@@ -29,7 +29,7 @@ fn main() {
             git(&["commit", "-m", msg]);
         }
         Cmd::Branch { branch_name } => {
-            git(&["branch", branch_name]);
+            git(&["branch", "-M", branch_name]);
         }
         Cmd::Remote { url } => {
             git(&["remote", "add", "origin", url]);
@@ -38,12 +38,11 @@ fn main() {
             git(&["push", "-u", "origin", branch]);
         }
         Cmd::Checkout { branch } => {
-            git(&["checkout", branch]);
+            git(&["checkout", "-b", branch]);
         }
     }
 }
 
-// Gitコマンドラッパー関数
 fn git(args: &[&str]) {
     Command::new("git")
         .args(args)
