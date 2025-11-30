@@ -1,7 +1,7 @@
 # gzy
 
 **gzy** is a simple CLI tool that makes common Git operations faster and easier.
-You can run commands like `add` / `commit` / `branch` / `push` with shorter syntax.
+You can run commands like `init` / `add` / `commit` / `branch` / `push` / `remote` / `clone` / `checkout` / `status` / `log`  with shorter syntax.
 
 [![Crates.io](https://img.shields.io/crates/v/gzy.svg)](https://crates.io/crates/gzy)
 [![Crates.io Downloads](https://img.shields.io/crates/d/gzy.svg)](https://crates.io/crates/gzy)
