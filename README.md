@@ -9,10 +9,14 @@ You can run commands like `add` / `commit` / `branch` / `push` with shorter synt
 
 ---
 
-## Installation
+## Usage
 
 ```bash
+# install
 cargo install gzy
+
+# Init
+gzy init
 
 # Add file
 gzy add <file>
@@ -29,5 +33,14 @@ gzy remote https://github.com/user/repo.git
 # Push
 gzy push main
 
+# Clone
+gzy clone https://github.com/user/repo.git
+
 # create new branch
 gzy checkout develop
+
+# Status
+gzy status
+
+# Log
+gzy log

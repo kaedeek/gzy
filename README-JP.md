@@ -9,25 +9,38 @@ Git の `add` / `commit` / `branch` / `push` などを短いコマンドで実�
 
 ---
 
-## 🚀 インストール
+## 使い方
 
 ```bash
+# インストール
 cargo install gzy
+
+# リポジトリを初期化
+gzy init
 
 # ファイルを追加
 gzy add <file>
 
 # コミット
-gzy commit "message"
+gzy commit "メッセージ"
 
 # ブランチ作成
 gzy branch dev
 
-# リモートリポジトリ追加
+# リモートリポジトリを追加
 gzy remote https://github.com/user/repo.git
 
 # プッシュ
 gzy push main
 
-# 新規ブランチ作成
+# クローン
+gzy clone https://github.com/user/repo.git
+
+# 新しいブランチを作成してチェックアウト
 gzy checkout develop
+
+# ステータスを表示
+gzy status
+
+# ログを表示
+gzy log

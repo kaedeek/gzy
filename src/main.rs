@@ -15,7 +15,13 @@ enum Cmd {
     Branch { branch_name: String },
     Remote { url: String },
     Push { branch: String },
+    Clone { clone_url: String},
     Checkout { branch: String },
+    
+    Init,
+    Status,
+    Log,
+
 }
 
 fn main() {
@@ -25,21 +31,34 @@ fn main() {
         Cmd::Add { file } => {
             git(&["add", file]);
         }
+
         Cmd::Commit { msg } => {
             git(&["commit", "-m", msg]);
         }
+
         Cmd::Branch { branch_name } => {
             git(&["branch", "-M", branch_name]);
         }
+
         Cmd::Remote { url } => {
             git(&["remote", "add", "origin", url]);
         }
+
         Cmd::Push { branch } => {
             git(&["push", "-u", "origin", branch]);
         }
+
+        Cmd::Clone { clone_url } => {
+            git(&["clone", clone_url]);
+        }
+
         Cmd::Checkout { branch } => {
             git(&["checkout", "-b", branch]);
         }
+
+        Cmd::Init => git(&["init"]),
+        Cmd::Status => git(&["status"]),
+        Cmd::Log => git(&["log"]),
     }
 }
 
