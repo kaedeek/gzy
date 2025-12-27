@@ -12,9 +12,6 @@ Git の `init` / `add` / `commit` / `branch` / `push` / `remote` / `clone` / `ch
 ## 使い方
 
 ```bash
-# インストール
-cargo install gzy
-
 # リポジトリを初期化
 gzy init
 

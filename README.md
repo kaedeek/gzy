@@ -23,9 +23,6 @@ cargo install gzy
 ## Usage
 
 ```bash
-# install
-cargo install gzy
-
 # Init
 gzy init
 
