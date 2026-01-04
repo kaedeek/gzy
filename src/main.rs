@@ -13,21 +13,10 @@ struct CLI {
 
 #[derive(Subcommand)]
 enum Cmd {
-    Add {
-        file: String,
-    },
-
-    Commit {
-        msg: String,
-    },
-
-    Branch {
-        branch_name: String,
-    },
-
-    Remote {
-        url: String,
-    },
+    Add { file: String },
+    Commit { msg: String },
+    Branch { branch_name: String },
+    Remote { url: String },
 
     Push {
         branch: Option<String>,
@@ -39,15 +28,22 @@ enum Cmd {
         force: bool,
     },
 
-    Clone {
-        clone_url: String,
-    },
+    Clone { clone_url: String },
 
     Checkout {
         branch: String,
 
         #[arg(short = 'b', long = "create")]
         create: bool,
+    },
+
+    Conflict {
+        strategy: String,
+    },
+
+    Sync {
+        base: String,
+        branch: Option<String>,
     },
 
     Init,
@@ -68,11 +64,7 @@ fn main() {
         }
 
         Cmd::Branch { branch_name } => {
-            git(vec![
-                "branch".into(),
-                "-M".into(),
-                branch_name.clone(),
-            ]);
+            git(vec!["branch".into(), "-M".into(), branch_name.clone()]);
         }
 
         Cmd::Remote { url } => {
@@ -84,12 +76,8 @@ fn main() {
             ]);
         }
 
-        Cmd::Push {
-            branch,
-            upstream,
-            force,
-        } => {
-            let mut args = vec!["push".to_string()];
+        Cmd::Push { branch, upstream, force } => {
+            let mut args: Vec<String> = vec!["push".into()];
 
             if *upstream {
                 args.push("-u".into());
@@ -113,30 +101,71 @@ fn main() {
 
         Cmd::Checkout { branch, create } => {
             if *create {
-                git(vec![
-                    "checkout".into(),
-                    "-b".into(),
-                    branch.clone(),
-                ]);
+                git(vec!["checkout".into(), "-b".into(), branch.clone()]);
             } else {
-                git(vec![
-                    "checkout".into(),
-                    branch.clone(),
-                ]);
+                git(vec!["checkout".into(), branch.clone()]);
             }
         }
 
-        Cmd::Init => {
-            git(vec!["init".into()]);
+        Cmd::Conflict { strategy } => match strategy.as_str() {
+            "ours" => {
+                git(vec!["checkout".into(), "--ours".into(), ".".into()]);
+                git(vec!["add".into(), ".".into()]);
+                git(vec![
+                    "commit".into(),
+                    "-m".into(),
+                    "Resolve conflicts (ours)".into(),
+                ]);
+            }
+            "theirs" => {
+                git(vec!["checkout".into(), "--theirs".into(), ".".into()]);
+                git(vec!["add".into(), ".".into()]);
+                git(vec![
+                    "commit".into(),
+                    "-m".into(),
+                    "Resolve conflicts (theirs)".into(),
+                ]);
+            }
+            "abort" => {
+                git(vec!["merge".into(), "--abort".into()]);
+            }
+            _ => {
+                eprintln!("strategy must be: ours | theirs | abort");
+            }
+        },
+
+        Cmd::Sync { base, branch } => {
+            git(vec!["fetch".into(), "upstream".into()]);
+            git(vec!["checkout".into(), base.clone()]);
+            git(vec![
+                "rebase".into(),
+                format!("upstream/{}", base),
+            ]);
+
+            let target = match branch {
+                Some(b) => b.clone(),
+                None => {
+                    let output = Command::new("git")
+                        .args(["branch", "--show-current"])
+                        .output()
+                        .expect("failed to get current branch");
+                    String::from_utf8_lossy(&output.stdout).trim().to_string()
+                }
+            };
+
+            git(vec!["checkout".into(), target.clone()]);
+            git(vec!["rebase".into(), base.clone()]);
+            git(vec![
+                "push".into(),
+                "origin".into(),
+                target,
+                "--force-with-lease".into(),
+            ]);
         }
 
-        Cmd::Status => {
-            git(vec!["status".into()]);
-        }
-
-        Cmd::Log => {
-            git(vec!["log".into()]);
-        }
+        Cmd::Init => git(vec!["init".into()]),
+        Cmd::Status => git(vec!["status".into()]),
+        Cmd::Log => git(vec!["log".into()]),
     }
 }
 
